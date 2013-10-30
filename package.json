@@ -1,0 +1,20 @@
+{
+  "name": "Intelligent.li.js",
+  "version": "0.0.1",
+  "description": "Intelligent.li.js is Javascript library that makes working with Intelligent.li in Javascript simple",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/intelligent-li/Intelligent.li.js.git"
+  },
+  "keywords": [
+    "Intelligent.li"
+  ],
+  "author": "Percepscion Pty. Ltd.",
+  "license": "GPL",
+  "readmeFilename": "README.md",
+  "gitHead": "d24f81ba20127f06bb74be65cc953dd188428edc"
+}
