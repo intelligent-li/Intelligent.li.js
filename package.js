@@ -1,5 +1,5 @@
 Package.describe({
-      summary: "Intelligent.li API Meteor Package"
+    summary: "Intelligent.li API Meteor Package"
 });
 
 Npm.depends({
@@ -24,6 +24,6 @@ Package.on_use(function (api) {
         'server'); 
 
     if (typeof api.export !== 'undefined') {
-        api.export(['my'], 'server'); 
+        api.export(['iliApi'], 'server'); 
     }
 });
