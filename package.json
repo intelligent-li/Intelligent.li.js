@@ -16,5 +16,19 @@
   "author": "Percepscion Pty. Ltd.",
   "license": "GPL",
   "readmeFilename": "README.md",
-  "gitHead": "d24f81ba20127f06bb74be65cc953dd188428edc"
+  "gitHead": "d24f81ba20127f06bb74be65cc953dd188428edc",
+  "devDependencies": {
+    "mocha": "~1.13.0",
+    "chai": "~1.8.1",
+    "sinon": "~1.7.3",
+    "sinon-chai": "~2.4.0"
+    "winston-spy": "~0.1.2"
+  },
+  "dependencies": {
+    "winston": "~0.7.2",
+    "jquery": "~1.8.3",
+    "wolfy87-eventemitter": "~4.2.5",
+    "heir": "~2.0.0",
+    "ws": "~0.4.31",
+  }
 }
