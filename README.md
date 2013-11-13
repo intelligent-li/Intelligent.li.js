@@ -1,8 +1,8 @@
 #Intelligent.li.js
 
-Intelligent.li.js is Javascript library that makes working with Intelligent.li in Javascript simple. The library is intended to be used as a [NodeJs](http://nodejs.org/) package, a Meteor smart package or within the browser via an Intelligent.li proxy server such as the [flask-quickstart](https://github.com/intelligent-li/flask-quickstart).
+Intelligent.li.js is Javascript library that makes working with Intelligent.li in Javascript simple. The library is intended to be used as a [NodeJs](http://nodejs.org/) package, a [Meteor](http://www.meteor.com/) smart package or within the browser via an Intelligent.li proxy server such as the [flask-quickstart](https://github.com/intelligent-li/flask-quickstart).
 
-**Note current version only works as a Meteor smart package, we are working on node and browser versions **
+*Note current version is only tested as a Meteor smart package, we are working on node and browser versions*
 
 The library takes care of interfacing with the Intelligent.li API by providing a reactive wrapper library for the Intelligent.li resources. 
 
@@ -57,7 +57,7 @@ In meteor the api variables are available already as:
         
 Now, you'll need to setup your certificates so that you can access your scope:
 
-** NodeJs**
+**NodeJs**
 
 Put your key, certificates in the root of your NodeJs application and then:
     
@@ -126,11 +126,11 @@ or if you want to load everything:
 
 other resources are also accessed in the same way, just get them from the appropriate cache:
 
-    var myDevice = ili.deviceCache.get("4d51dc7e53d9289cbe396e6fced57f4e");
+    var myDevice = ili_deviceCache.get("4d51dc7e53d9289cbe396e6fced57f4e");
 
 if you want your own instance for some reason, create it with `new`
 
-    var myPrivateFeed = new ili.Feed("4d51dc7e53d9289cbe396e6fced57f4e");
+    var myPrivateFeed = new ili_Feed("4d51dc7e53d9289cbe396e6fced57f4e");
     
 you can then load the meta data without effecting the global instance,
          
@@ -232,7 +232,7 @@ To access samples for a feed, you'll need to setup the webSocket connection to I
 
 this example uses the nodejs package `ws` web socket class and adds the certificates for accessing Intelligent.li. This will connect the web socket to Intelligent.li and maintain it ongoing, i.e. it reconnects on failures etc. To stop the web socket, without restart:
 
-    ili.api.stop(false);
+    ili_api.stop(false);
     
 The api maintains all feed subscriptions for you automatically. All feeds that have observers on the samples map will be subscribed to; so to subscribe to samples for a feed simply register an `onchanged` observer to the samples map.
     
