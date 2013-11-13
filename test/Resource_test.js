@@ -3,7 +3,7 @@ var chai = require('chai'),
     api = require('../lib/Api.js').instance,
     Resource = require('../lib/Resource.js').Resource,
     sinonChai = require("sinon-chai"),
-    $ = require('jQuery');
+    nock = require('nock');
 
 var expect = chai.expect;
 chai.use(sinonChai);
@@ -59,8 +59,9 @@ describe("Resource", function(done) {
     });
 
     it("should load the tags into the feed", function(done) {
-      var tags = { name1: "value1", name2 : "value2" };
-      stub = sinon.stub($, 'getJSON').callsArgWith(1, tags, "success");
+      var feedNock = nock('https://au.intelligent.li')
+        .get('/api/v1/feeds/639bae9ac6b3e1a84cebb7b403297b79/tags')
+        .reply(200,  { name1: "value1", name2 : "value2" });
 
       var r = new Resource("feeds", "639bae9ac6b3e1a84cebb7b403297b79");
 
@@ -93,8 +94,9 @@ describe("Resource", function(done) {
     });
 
     it("should load attributes into the resource", function(done) {
-      var attrs = { name1: "value1", name2 : "value2" };
-      stub = sinon.stub($, 'getJSON').callsArgWith(1, attrs, "success");
+      var feedNock = nock('https://au.intelligent.li')
+        .get('/api/v1/feeds/639bae9ac6b3e1a84cebb7b403297b79')
+        .reply(200,  { name1: "value1", name2 : "value2" });
 
       var r = new Resource("feeds", "639bae9ac6b3e1a84cebb7b403297b79");
 
