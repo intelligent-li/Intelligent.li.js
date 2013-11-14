@@ -18,6 +18,20 @@ describe("Feed", function(done) {
       expect(f.resource()).to.equal("feeds/639bae9ac6b3e1a84cebb7b403297b79");
     });
   });
+
+  describe("samples", function() {
+    it.skip("should send subscribe message when observer is added", function() {
+
+    });
+
+    it.skip("should send unsubscribe message when last observer is removed", function() {
+
+    });
+
+    it.skip("should allow start time to be set (before an observer is added)", function() {
+
+    });
+  });
 });
 
 describe("FeedCache", function(done) {
