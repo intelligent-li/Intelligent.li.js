@@ -1,9 +1,8 @@
 var chai = require('chai'),
     sinon = require('sinon'),
-    $ = require('jQuery'),
-    Feed = require('../lib/Feed.js').Feed,
-    feedCache = require('../lib/Feed.js').feedCache
-    api = require('../lib/Api.js').instance,
+    Feed = require('../lib/Feed.js').ili.Feed,
+    feedCache = require('../lib/Feed.js').ili.feedCache
+    api = require('../lib/Api.js').ili.Api.instance,
     sinonChai = require("sinon-chai");
 
 var expect = chai.expect;

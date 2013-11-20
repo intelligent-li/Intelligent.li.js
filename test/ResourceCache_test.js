@@ -1,7 +1,7 @@
 var chai = require('chai'),
     sinon = require('sinon'),
-    ResourceCache = require('../lib/ResourceCache.js').ResourceCache,
-    Feed = require('../lib/Feed.js').Feed,
+    ResourceCache = require('../lib/ResourceCache.js').ili.ResourceCache,
+    Feed = require('../lib/Feed.js').ili.Feed,
     sinonChai = require("sinon-chai");
 
 var expect = chai.expect;

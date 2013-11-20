@@ -1,9 +1,9 @@
 var chai = require('chai'),
     sinon = require('sinon'),
     $ = require('jQuery'),
-    Device = require('../lib/Device.js').Device,
-    deviceCache = require('../lib/Device.js').deviceCache
-    api = require('../lib/Api.js').Api.instance,
+    Device = require('../lib/Device.js').ili.Device,
+    deviceCache = require('../lib/Device.js').ili.deviceCache
+    api = require('../lib/Api.js').ili.Api.instance,
     sinonChai = require("sinon-chai");
 
 var expect = chai.expect;

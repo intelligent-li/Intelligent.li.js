@@ -1,8 +1,8 @@
 var chai = require('chai'),
     sinon = require('sinon'),
-    SampleStore = require('../lib/SampleStore.js').SampleStore,
+    SampleStore = require('../lib/SampleStore.js').ili.SampleStore,
     sinonChai = require("sinon-chai"),
-    logger = require('../lib/Logger.js');
+    logger = require('../lib/Logger.js').ili.logger;
 
 var expect = chai.expect;
 chai.use(sinonChai);

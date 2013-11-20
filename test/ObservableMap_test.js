@@ -1,8 +1,8 @@
 var chai = require('chai'),
     sinon = require('sinon'),
-    ObservableMap = require('../lib/ObservableMap.js').ObservableMap,
+    ObservableMap = require('../lib/ObservableMap.js').ili.ObservableMap,
     sinonChai = require("sinon-chai"),
-    logger = require('../lib/Logger.js');
+    logger = require('../lib/Logger.js').ili.logger;
 
 var expect = chai.expect;
 chai.use(sinonChai);

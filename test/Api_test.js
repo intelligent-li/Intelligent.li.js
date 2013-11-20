@@ -1,13 +1,13 @@
 var expect = require('chai').expect,
-    Api = require('../lib/Api.js').Api,
-    logger = require('../lib/logger.js').logger,
-    api = require('../lib/Api.js').instance,
-    feedCache = require('../lib/Feed.js').feedCache,
+    Api = require('../lib/Api.js').ili.Api,
+    logger = require('../lib/logger.js').ili.Logger.instance,
+    api = require('../lib/Api.js').ili.Api.instance,
+    feedCache = require('../lib/Feed.js').ili.feedCache,
     sinon = require('sinon'),
     sinonChai = require('sinon-chai'),
     $ = require('jQuery'),
-    ObservableMap = require('../lib/ObservableMap.js').ObservableMap,
-    SampleStore = require('../lib/SampleStore.js').SampleStore,
+    ObservableMap = require('../lib/ObservableMap.js').ili.ObservableMap,
+    SampleStore = require('../lib/SampleStore.js').ili.SampleStore,
     spyLogger = require('winston-spy'),
     winston = require('winston'),
     WebSocket = require('ws'),
@@ -16,17 +16,17 @@ var expect = require('chai').expect,
 describe("Api", function() {
   describe("constructor", function() {
     it("should default to use production", function() {
-      expect(api.host).to.equal("au.intelligent.li");
+      expect(api._host).to.equal("au.intelligent.li");
     });
 
     it("should allow the host to be specified", function() {
       var a = new Api("a different host");
-      expect(a.host).to.equal("a different host");
+      expect(a._host).to.equal("a different host");
     });
 
     it("should have a singleton instance that uses the default host", function() {
       expect(api).to.be.defined;
-      expect(api.host).to.equal("au.intelligent.li");
+      expect(api._host).to.equal("au.intelligent.li");
     });
   });
 
@@ -99,12 +99,12 @@ describe("Api", function() {
       it("should create a websocket and initialise it", function() {
         api.open();
         expect(createWsSpy).to.be.calledOnce;
-        expect(api).to.have.property('ws');
+        expect(api).to.have.property('_ws');
         expect(api).not.to.be.a('null');
-        expect(api.ws).to.have.property('onopen');
-        expect(api.ws).to.have.property('onclose');
-        expect(api.ws).to.have.property('onerror');
-        expect(api.ws).to.have.property('onmessage');
+        expect(api._ws).to.have.property('onopen');
+        expect(api._ws).to.have.property('onclose');
+        expect(api._ws).to.have.property('onerror');
+        expect(api._ws).to.have.property('onmessage');
         //on creation there should not be any timers running.
         expect(api.reconnectTimer).to.be.an('undefined');
         expect(api.heartBeatTimer).to.be.an('undefined');
@@ -114,7 +114,7 @@ describe("Api", function() {
     describe("#stop", function() {
       it("should clear the timers", function() {
         api.open();
-        api.ws.onopen();
+        api._ws.onopen();
         api.stop(false);
         expect(api.reconnectTimer).to.be.an('undefined');
         expect(api.heartBeatTimer).to.be.an('undefined');
@@ -122,7 +122,7 @@ describe("Api", function() {
 
       it("should reconnect if requested ", function() {
         api.open();
-        api.ws.onopen();
+        api._ws.onopen();
         api.stop(true);
         stub = sinon.stub(api, 'open');
         this.clock.tick(11000);
@@ -140,7 +140,7 @@ describe("Api", function() {
 
         api.open();
 
-        api.ws.readyState = WebSocket.OPEN;
+        api._ws.readyState = WebSocket.OPEN;
         api.stop(false);
 
         expect(stub).to.be.calledTwice;
@@ -150,14 +150,14 @@ describe("Api", function() {
       });
     });
 
-    describe("api.ws", function() {
+    describe("api._ws", function() {
 
       describe("#send", function() {
         it("should send the message when connected", function() {
           api.open();
-          stub = sinon.stub(api.ws, 'send');
+          stub = sinon.stub(api._ws, 'send');
           spy = sinon.spy(api, 'send');
-          api.ws.readyState = WebSocket.OPEN;
+          api._ws.readyState = WebSocket.OPEN;
           api.send({name: "value"});
           expect(stub).to.be.calledOnce;
           expect(stub).to.be.calledWithMatch('{"name":"value"}');
@@ -166,16 +166,16 @@ describe("Api", function() {
 
         it("should not send the message when not connected", function() {
           api.open();
-          stub = sinon.stub(api.ws, 'send');
+          stub = sinon.stub(api._ws, 'send');
           spy = sinon.spy(api, 'send');
-          api.ws.readyState = WebSocket.CLOSED;
+          api._ws.readyState = WebSocket.CLOSED;
           api.send({name: "value"});
           expect(stub).to.not.be.called;
           expect(spy).to.returned(false);
         });
       });
-      describe("#onmessage", function() {
 
+      describe("#onmessage", function() {
         var spy2 = null;
         var guid = "d7287feb180e4339c5d91784ada59b3d";
         var feed = api.feedCache.get(guid);
@@ -202,7 +202,7 @@ describe("Api", function() {
 
         it("should insert samples into the appropriate feed", function() {
           api.open();
-          api.ws.onmessage(validMsg);
+          api._ws.onmessage(validMsg);
 
           expect(feed.samples.length).to.equal(4);
           expect(feed.samples.get(1367042400)).to.equal(0.04299999999999926);
@@ -218,7 +218,7 @@ describe("Api", function() {
           logger.remove(winston.transports.Console);
           logger.add((spyLogger), { spy: spy });
 
-          api.ws.onmessage({ 'data' : "this is some crap" });
+          api._ws.onmessage({ 'data' : "this is some crap" });
 
           expect(feed.samples.length).to.equal(0);
           expect(spy).to.be.called;
@@ -226,7 +226,7 @@ describe("Api", function() {
 
         it("should treat invalid values as NaN", function() {
           api.open();
-          api.ws.onmessage({ 'data' : '{ "guid": "d7287feb180e4339c5d91784ada59b3d", "values": {"1.3670424E9" : "junk" }}' });
+          api._ws.onmessage({ 'data' : '{ "guid": "d7287feb180e4339c5d91784ada59b3d", "values": {"1.3670424E9" : "junk" }}' });
           expect(feed.samples.length).to.equal(1);
           expect(isNaN(feed.samples.get(1367042400))).to.be.true;
         });
@@ -237,7 +237,7 @@ describe("Api", function() {
            spy2 = sinon.spy();
            feed.samples.onchanged(spy);
            feed.samples.onchanged(spy2);
-           api.ws.onmessage(validMsg);
+           api._ws.onmessage(validMsg);
            expect(spy).to.be.calledOnce;
            expect(spy2).to.be.calledOnce;
         });
@@ -252,7 +252,7 @@ describe("Api", function() {
           stub = sinon.stub(api, 'subscribe');
           f1.samples.onchanged(function() {});
           f2.samples.onchanged(function() {});
-          api.ws.onopen();
+          api._ws.onopen();
           expect(stub).to.be.calledTwice;
           expect(stub).to.be.calledWith(f1);
           expect(stub).to.be.calledWith(f2);
@@ -262,7 +262,7 @@ describe("Api", function() {
         it("should start the heartbeat timer", function() {
           api.open();
           stub = sinon.stub(api, 'send');
-          api.ws.onopen();
+          api._ws.onopen();
           this.clock.tick(10000 * 2);
           expect(stub).to.be.calledTwice;
         });

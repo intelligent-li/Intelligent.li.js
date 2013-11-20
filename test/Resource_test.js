@@ -1,7 +1,7 @@
 var chai = require('chai'),
     sinon = require('sinon'),
-    api = require('../lib/Api.js').instance,
-    Resource = require('../lib/Resource.js').Resource,
+    api = require('../lib/Api.js').ili.Api.instance,
+    Resource = require('../lib/Resource.js').ili.Resource,
     sinonChai = require("sinon-chai"),
     nock = require('nock');
 
