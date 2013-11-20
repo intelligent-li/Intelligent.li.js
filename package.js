@@ -39,17 +39,5 @@ Package.on_use(function (api) {
 
     api.add_files('lib/MeteorConnector.js', 'server');
 
-    api.export([
-        //'ili_logger',
-        //'ili_Resource',
-       // 'ili_ObservableMap',
-       // 'ili_SampleStore', 
-       // 'ili_api',
-       // 'ili_Resource', 
-       // 'ili_ResourceCache', 
-       // 'ili_Feed', 
-       // 'ili_feedCache', 
-       // 'ili_Device', 
-       // 'ili_deviceCache'], ['client','server']); 
-        'ili'], ['client','server']); 
+    api.export(['ili'], ['client','server']); 
 });
