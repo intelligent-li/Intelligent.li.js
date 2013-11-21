@@ -20,7 +20,6 @@ Add the npm and Intelligent.li.js packages to your smart.json
     
     {
       "packages": {
-        "npm": {},
         "intelligent.li": {
           "git": "git@github.com:intelligent-li/Intelligent.li.js.git"
         }
@@ -29,7 +28,10 @@ Add the npm and Intelligent.li.js packages to your smart.json
     
 Then run the following to download and install the packages. 
 
-    $ mrt list
+    $ mrt update
+    $ mrt add npm
+    $ mrt add streams
+    $ mrt add intelligent.li
     
 ##Usage    
  
@@ -39,21 +41,25 @@ Let's walk though an example, first thing to do is get a reference to the Inteli
 
 **NodeJs**
 
-    var ili_api = require('intelligent.li.js').instance;
-    var ili_feedCache = ??
-    var ili_Feed = ??
-    var ili_deviceCache = ??
-    var ili_Device = ??
+    var ili.api = require('intelligent.li.js').instance;
+    var ili.feeds = ??
+    var ili.Feed = ??
+    var ili.devices = ??
+    var ili.Device = ??
     
 **Meteor** 
 
 In meteor the api variables are available already as:
 
-    ili_api 
-    ili_feedCache
-    ili_Feed
-    ili_deviceCache
-    ili_Device    
+    ili.api 
+    ili.feeds
+    ili.Feed
+    ili.devices
+    ili.Device  
+    ili.sources
+    ili.Source 
+    ili.collections
+    ili.Collection    
         
 Now, you'll need to setup your certificates so that you can access your scope:
 
@@ -61,7 +67,7 @@ Now, you'll need to setup your certificates so that you can access your scope:
 
 Put your key, certificates in the root of your NodeJs application and then:
     
-    ili_api.certs = { 
+    ili.api.certs = { 
         cert: fs.readFileSync('client.pem'), 
         key: fs.readFileSync('key.pem'), 
         ca: fs.readFileSync('intelligent.li-ca.crt')
@@ -71,7 +77,7 @@ Put your key, certificates in the root of your NodeJs application and then:
 
 Put your key, certificate and `intelligent.li-ca.crt` into the `private` folder.
 
-    ili_api.certs = { 
+    ili.api.certs = { 
         cert: Assets.getText('client.pem'), 
         key: Assets.getText('key.pem'), 
         ca: Assets.getText('intelligent.li-ca.crt')
@@ -79,7 +85,7 @@ Put your key, certificate and `intelligent.li-ca.crt` into the `private` folder.
        
 you can now grab a feed:
     
-    var myFeed = ili_feedCache.get("639bae9ac6b3e1a84cebb7b403297b79");
+    var myFeed = ili.feeds.get("639bae9ac6b3e1a84cebb7b403297b79");
     
 This returns a singleton instance of the feed resource, i.e. the instance is shared across your application. We can now get the tags on the feed by:
 
@@ -126,11 +132,11 @@ or if you want to load everything:
 
 other resources are also accessed in the same way, just get them from the appropriate cache:
 
-    var myDevice = ili_deviceCache.get("4d51dc7e53d9289cbe396e6fced57f4e");
+    var myDevice = ili.devices.get("4d51dc7e53d9289cbe396e6fced57f4e");
 
 if you want your own instance for some reason, create it with `new`
 
-    var myPrivateFeed = new ili_Feed("4d51dc7e53d9289cbe396e6fced57f4e");
+    var myPrivateFeed = new ili.Feed("4d51dc7e53d9289cbe396e6fced57f4e");
     
 you can then load the meta data without effecting the global instance,
          
@@ -213,7 +219,7 @@ Use the `query` function on the resource's cache to find the resources that matc
            console.log("key: " + k + " value: " + v);
        });
     }
-    ili_feedCache.query("*", resultHandler);
+    ili.feeds.query("*", resultHandler);
     
 *TODO more query examples*
 
@@ -226,13 +232,13 @@ To access samples for a feed, you'll need to setup the webSocket connection to I
     var keyPem = Assets.getText('key.pem');
     var caPem = Assets.getText('ca.crt');
     
-    ili_api.start(function(uri) {
-        return new WebSocket(uri, ili_api.certs);
+    ili.api.start(function(uri) {
+        return new WebSocket(uri, ili.api.certs);
     });
 
 this example uses the nodejs package `ws` web socket class and adds the certificates for accessing Intelligent.li. This will connect the web socket to Intelligent.li and maintain it ongoing, i.e. it reconnects on failures etc. To stop the web socket, without restart:
 
-    ili_api.stop(false);
+    ili.api.stop(false);
     
 The api maintains all feed subscriptions for you automatically. All feeds that have observers on the samples map will be subscribed to; so to subscribe to samples for a feed simply register an `onchanged` observer to the samples map.
     
