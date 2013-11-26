@@ -217,13 +217,20 @@ describe("Api", function() {
 
           var msg0String = JSON.stringify({
             "guid": guid,
-            "values": {  "1.3670424E9": 0 }
+            "values": {  "1.3670424E9": 0,
+              "1.3670434E9": 0.0,
+              "1.3670444E9": "0",
+              "1.3670454E9": "0.0"}
+
           });
           var valid0Msg = { 'data' : msg0String };
           api._ws.onmessage(valid0Msg);
 
-          expect(feed.samples.length).to.equal(1);
+          expect(feed.samples.length).to.equal(4);
           expect(feed.samples.get(1367042400)).to.equal(0);
+          expect(feed.samples.get(1367043400)).to.equal(0);
+          expect(feed.samples.get(1367044400)).to.equal(0);
+          expect(feed.samples.get(1367045400)).to.equal(0);
         });
 
         it.skip("should log messages that it didn't understand", function() {
