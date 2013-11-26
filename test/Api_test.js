@@ -211,6 +211,21 @@ describe("Api", function() {
           expect(isNaN(feed.samples.get(1367053200))).to.be.true;
         });
 
+        //this was created due to defect noticed whilst using the api
+        it("should handle zero valued samples", function() {
+          api.open();
+
+          var msg0String = JSON.stringify({
+            "guid": guid,
+            "values": {  "1.3670424E9": 0 }
+          });
+          var valid0Msg = { 'data' : msg0String };
+          api._ws.onmessage(valid0Msg);
+
+          expect(feed.samples.length).to.equal(1);
+          expect(feed.samples.get(1367042400)).to.equal(0);
+        });
+
         it.skip("should log messages that it didn't understand", function() {
           api.open();
           spy = sinon.spy();
