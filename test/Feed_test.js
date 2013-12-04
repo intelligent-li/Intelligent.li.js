@@ -19,17 +19,96 @@ describe("Feed", function(done) {
   });
 
   describe("samples", function() {
-    it.skip("should send subscribe message when observer is added", function() {
+    var subscribeStub, loadResourceStub;
+    afterEach(function(){
+      subscribeStub.restore();
+      loadResourceStub.restore();
+    });
 
+    it("should load samples from 'start'", function() {
+      subscribeStub = sinon.stub(api, 'subscribe');
+      loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
+        var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117685E9": 20.0, "1.386117695E9": 21.0, "1.38611769E9": 22.0}}');
+        parser(map, d);
+        notify(true);
+      });
+
+      var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
+      f.start = 1386117685;
+      var spy1 = sinon.spy(function(changes){
+         expect(f.samples.get(1386117685)).to.equal(20);
+         expect(changes[0][1386117685]).to.equal(20);
+      });
+
+      f.samples.onchanged(spy1);
+      expect(subscribeStub).to.be.called;
+      expect(loadResourceStub).to.be.called;
+      expect(spy1).to.be.called;
+    });
+
+    it("should load samples from 'start' for second observer", function() {
+      subscribeStub = sinon.stub(api, 'subscribe');
+      loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
+        var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117685E9": 20.0, "1.386117695E9": 21.0, "1.38611769E9": 22.0}}');
+        parser(map, d);
+        notify(true);
+      });
+
+      var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
+      f.start = 1386117685;
+      f.samples.onchanged(function(){}); //the first observer
+
+      var spy1 = sinon.spy(function(changes){
+         expect(f.samples.get(1386117685)).to.equal(20);
+         expect(changes[0][1386117685]).to.equal(20);
+      });
+      subscribeStub.restore();
+      subscribeStub = sinon.stub(api, 'subscribe');
+
+      f.samples.onchanged(spy1);
+      expect(subscribeStub).not.to.be.called;
+      expect(loadResourceStub).to.be.called;
+      expect(spy1).to.be.called;
+    });
+
+    it("should load samples from 'start' for second observer with new start time", function() {
+      subscribeStub = sinon.stub(api, 'subscribe');
+      loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
+        var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117685E9": 20.0, "1.386117695E9": 21.0, "1.38611769E9": 22.0}}');
+        parser(map, d);
+        notify(true);
+      });
+
+      var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
+      f.start = 1386117685;
+      f.samples.onchanged(function(){}); //the first observer
+
+      f.start = 1386117680;
+      var spy1 = sinon.spy(function(changes){
+         expect(f.samples.get(1386117680)).to.equal(19);
+         expect(changes[0][1386117680]).to.equal(19);
+      });
+
+      subscribeStub.restore();
+      subscribeStub = sinon.stub(api, 'subscribe');
+
+      loadResourceStub.restore();
+      loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
+        var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117680E9": 19.0}}');
+        parser(map, d);
+        notify(true);
+      });
+
+      f.samples.onchanged(spy1);
+      expect(subscribeStub).not.to.be.called;
+      expect(loadResourceStub).to.be.called;
+      expect(spy1).to.be.called;
     });
 
     it.skip("should send unsubscribe message when last observer is removed", function() {
 
     });
 
-    it.skip("should allow start time to be set (before an observer is added)", function() {
-
-    });
   });
 });
 

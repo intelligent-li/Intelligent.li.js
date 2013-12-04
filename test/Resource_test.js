@@ -46,16 +46,16 @@ describe("Resource", function(done) {
       var r = new Resource("feeds", "639bae9ac6b3e1a84cebb7b403297b79");
 
       stub = sinon.stub(api, 'loadResource');
-      var cb =function(result){};
+      var cb = sinon.spy();
 
       r.loadTags(cb);
 
       expect(stub).to.be.called;
       expect(stub).to.be.calledWith(
         "feeds/639bae9ac6b3e1a84cebb7b403297b79/tags",
-        r.tags,
-        cb
+        r.tags
       );
+
     });
 
     it("should load the tags into the feed", function(done) {
@@ -84,13 +84,13 @@ describe("Resource", function(done) {
       var r = new Resource("feeds", "639bae9ac6b3e1a84cebb7b403297b79");
 
       stub = sinon.stub(api, 'loadResource');
-      var cb =function(result){};
+      var cb = sinon.spy();
+
       r.loadAttributes(cb);
 
       expect(stub).to.be.calledWith(
         "feeds/639bae9ac6b3e1a84cebb7b403297b79",
-        r.attributes,
-        cb);
+        r.attributes);
     });
 
     it("should load attributes into the resource", function(done) {
