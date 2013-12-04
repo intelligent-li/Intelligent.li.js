@@ -30,19 +30,19 @@ describe("Feed", function(done) {
       loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
         var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117685E9": 20.0, "1.386117695E9": 21.0, "1.38611769E9": 22.0}}');
         parser(map, d);
-        notify(true);
+        notify && notify(true);
       });
 
       var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
-      f.start = 1386117685;
       var spy1 = sinon.spy(function(changes){
          expect(f.samples.get(1386117685)).to.equal(20);
          expect(changes[0][1386117685]).to.equal(20);
       });
+      f.setStart(1386117685);
+      expect(loadResourceStub).to.be.called;
 
       f.samples.onchanged(spy1);
       expect(subscribeStub).to.be.called;
-      expect(loadResourceStub).to.be.called;
       expect(spy1).to.be.called;
     });
 
@@ -51,11 +51,11 @@ describe("Feed", function(done) {
       loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
         var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117685E9": 20.0, "1.386117695E9": 21.0, "1.38611769E9": 22.0}}');
         parser(map, d);
-        notify(true);
+        notify && notify(true);
       });
 
       var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
-      f.start = 1386117685;
+      f.setStart(1386117685);
       f.samples.onchanged(function(){}); //the first observer
 
       var spy1 = sinon.spy(function(changes){
@@ -76,14 +76,23 @@ describe("Feed", function(done) {
       loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
         var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117685E9": 20.0, "1.386117695E9": 21.0, "1.38611769E9": 22.0}}');
         parser(map, d);
-        notify(true);
+        notify && notify(true);
       });
 
       var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
-      f.start = 1386117685;
+      f.setStart(1386117685);
       f.samples.onchanged(function(){}); //the first observer
 
-      f.start = 1386117680;
+      loadResourceStub.restore();
+      loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
+        var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117680E9": 19.0}}');
+        parser(map, d);
+        notify && notify(true);
+      });
+
+      f.setStart(1386117680);
+      expect(loadResourceStub).to.be.called;
+
       var spy1 = sinon.spy(function(changes){
          expect(f.samples.get(1386117680)).to.equal(19);
          expect(changes[0][1386117680]).to.equal(19);
@@ -92,16 +101,8 @@ describe("Feed", function(done) {
       subscribeStub.restore();
       subscribeStub = sinon.stub(api, 'subscribe');
 
-      loadResourceStub.restore();
-      loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
-        var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117680E9": 19.0}}');
-        parser(map, d);
-        notify(true);
-      });
-
       f.samples.onchanged(spy1);
       expect(subscribeStub).not.to.be.called;
-      expect(loadResourceStub).to.be.called;
       expect(spy1).to.be.called;
     });
 
