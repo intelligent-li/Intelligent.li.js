@@ -7,7 +7,6 @@ Npm.depends({
   "winston": "0.7.2",
   "wolfy87-eventemitter": "4.2.5",
   "heir": "2.0.0",
-  "uuid": "1.4.1",
   "ws": "0.4.31"
 });
 
@@ -16,7 +15,7 @@ Package.on_use(function (api) {
 
   api.add_files([
     '.npm/package/node_modules/wolfy87-eventemitter/EventEmitter.js',
-    '.npm/package/node_modules/heir/heir.js'
+    '.npm/package/node_modules/heir/heir.js',
     ],
     ['client']); 
 
