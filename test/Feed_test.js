@@ -23,17 +23,21 @@ describe("Feed", function(done) {
     afterEach(function(){
       subscribeStub.restore();
       loadResourceStub.restore();
+
     });
 
     it("should load samples from 'start'", function() {
       subscribeStub = sinon.stub(api, 'subscribe');
-      loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
-        var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117685E9": 20.0, "1.386117695E9": 21.0, "1.38611769E9": 22.0}}');
-        parser(map, d);
+      var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
+
+      loadResourceStub = sinon.stub(api, 'loadSamples', function(id, start, end, notify){
+        f.samples.insert(1386117685, 20.0);
+        f.samples.insert(1386117690, 21.0);
+        f.samples.insert(1386117695, 22.0);
+
         notify && notify(true);
       });
 
-      var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
       var spy1 = sinon.spy(function(changes){
          expect(f.samples.get(1386117685)).to.equal(20);
          expect(changes[0][1386117685]).to.equal(20);
@@ -47,14 +51,16 @@ describe("Feed", function(done) {
     });
 
     it("should load samples from 'start' for second observer", function() {
-      subscribeStub = sinon.stub(api, 'subscribe');
-      loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
-        var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117685E9": 20.0, "1.386117695E9": 21.0, "1.38611769E9": 22.0}}');
-        parser(map, d);
+      var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
+
+      loadResourceStub = sinon.stub(api, 'loadSamples', function(id, start, end, notify){
+        f.samples.insert(1386117685, 20.0);
+        f.samples.insert(1386117690, 21.0);
+        f.samples.insert(1386117695, 22.0);
+
         notify && notify(true);
       });
 
-      var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
       f.setStart(1386117685);
       f.samples.onchanged(function(){}); //the first observer
 
@@ -62,7 +68,6 @@ describe("Feed", function(done) {
          expect(f.samples.get(1386117685)).to.equal(20);
          expect(changes[0][1386117685]).to.equal(20);
       });
-      subscribeStub.restore();
       subscribeStub = sinon.stub(api, 'subscribe');
 
       f.samples.onchanged(spy1);
@@ -73,20 +78,21 @@ describe("Feed", function(done) {
 
     it("should load samples from 'start' for second observer with new start time", function() {
       subscribeStub = sinon.stub(api, 'subscribe');
-      loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
-        var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117685E9": 20.0, "1.386117695E9": 21.0, "1.38611769E9": 22.0}}');
-        parser(map, d);
-        notify && notify(true);
-      });
-
       var f = new Feed("639bae9ac6b3e1a84cebb7b403297b79");
+      loadResourceStub = sinon.stub(api, 'loadSamples', function(id, start, end, notify){
+        f.samples.insert(1386117685, 20.0);
+        f.samples.insert(1386117690, 21.0);
+        f.samples.insert(1386117695, 22.0);
+
+         notify && notify(true);
+       });
+
       f.setStart(1386117685);
       f.samples.onchanged(function(){}); //the first observer
 
       loadResourceStub.restore();
       loadResourceStub = sinon.stub(api, 'loadResource', function(resource, map, notify, parser){
-        var d = JSON.parse('{ "guid": "639bae9ac6b3e1a84cebb7b403297b79", "values": { "1.386117680E9": 19.0}}');
-        parser(map, d);
+        f.samples.insert(1386117680, 19.0);
         notify && notify(true);
       });
 
