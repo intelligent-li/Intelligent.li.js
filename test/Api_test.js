@@ -30,6 +30,98 @@ describe("Api", function() {
     });
   });
 
+  describe("#loadSamples", function(done) {
+    afterEach(function(){
+      api.feedCache.get("feed-1").samples = new SampleStore();
+    });
+
+    it("should request leading and trailing samples when start is before and end is after", function(done){
+      var feed = api.feedCache.get("feed-1");
+      feed.samples.insert(3,3);
+      feed.samples.insert(4,4);
+      feed.samples.insert(5,5);
+
+      var samplesLeadingNock = nock('https://au.intelligent.li')
+        .get('/api/v1/feeds/feed-1/samples?start=1&end=3')
+        .reply(200, { guid: "feed-1", values : { 1: "1", 2: "2", 3: "3" }});
+
+      var samplesTrailingNock = nock('https://au.intelligent.li')
+        .get('/api/v1/feeds/feed-1/samples?start=5&end=7')
+        .reply(200, { guid: "feed-1", values : { 5: "5", 6: "6", 7:"7" }});
+
+      api.loadSamples(feed.id, 1, 7, function(success){
+        expect(success).to.be.true;
+        expect(feed.samples.get(1)).to.equal(1);
+        expect(feed.samples.get(2)).to.equal(2);
+        expect(feed.samples.get(3)).to.equal(3);
+        expect(feed.samples.get(4)).to.equal(4);
+        expect(feed.samples.get(5)).to.equal(5);
+        expect(feed.samples.get(6)).to.equal(6);
+        expect(feed.samples.get(7)).to.equal(7);
+        done();
+      });
+
+    });
+    it("should load an empty map from start to end", function(done){
+      var feed = api.feedCache.get("feed-1");
+
+      var samplesLeadingNock = nock('https://au.intelligent.li')
+        .get('/api/v1/feeds/feed-1/samples?start=1&end=3')
+        .reply(200, { guid: "feed-1", values : { 1: "1", 2: "2", 3: "3" }});
+
+
+      api.loadSamples(feed.id, 1, 3, function(success){
+        expect(success).to.be.true;
+        expect(feed.samples.get(1)).to.equal(1);
+        expect(feed.samples.get(2)).to.equal(2);
+        expect(feed.samples.get(3)).to.equal(3);
+        done();
+      });
+    });
+
+    it("should only load leading when end is before firstTime", function(done){
+      var feed = api.feedCache.get("feed-1");
+      feed.samples.insert(4,4);
+      feed.samples.insert(5,5);
+
+      var samplesLeadingNock = nock('https://au.intelligent.li')
+        .get('/api/v1/feeds/feed-1/samples?start=1&end=2')
+        .reply(200, { guid: "feed-1", values : { 1: "1", 2: "2"}});
+
+
+      api.loadSamples(feed.id, 1, 2, function(success){
+        expect(success).to.be.true;
+        expect(feed.samples.get(1)).to.equal(1);
+        expect(feed.samples.get(2)).to.equal(2);
+        expect(feed.samples.get(3)).not.to.equal(3);
+        expect(feed.samples.get(4)).to.equal(4);
+        expect(feed.samples.get(5)).to.equal(5);
+        done();
+      });
+    });
+
+    it("should only load trailing when start is after lastTime", function(done){
+      var feed = api.feedCache.get("feed-1");
+      feed.samples.insert(1,1);
+      feed.samples.insert(2,2);
+
+      var samplesLeadingNock = nock('https://au.intelligent.li')
+        .get('/api/v1/feeds/feed-1/samples?start=4&end=5')
+        .reply(200, { guid: "feed-1", values : { 4: "4", 5: "5"}});
+
+
+      api.loadSamples(feed.id, 4, 5, function(success){
+        expect(success).to.be.true;
+        expect(feed.samples.get(1)).to.equal(1);
+        expect(feed.samples.get(2)).to.equal(2);
+        expect(feed.samples.get(3)).not.to.equal(3);
+        expect(feed.samples.get(4)).to.equal(4);
+        expect(feed.samples.get(5)).to.equal(5);
+        done();
+      });
+    });
+  });
+
   describe("#loadResource", function(done) {
     afterEach(function(){ });
 
