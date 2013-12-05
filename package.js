@@ -7,6 +7,7 @@ Npm.depends({
   "winston": "0.7.2",
   "wolfy87-eventemitter": "4.2.5",
   "heir": "2.0.0",
+  "uuid": "1.4.1",
   "ws": "0.4.31"
 });
 
