@@ -7,7 +7,8 @@ Npm.depends({
   "winston": "0.7.2",
   "wolfy87-eventemitter": "4.2.5",
   "heir": "2.0.0",
-  "ws": "0.4.31"
+  "ws": "0.4.31",
+  "json2csv": "2.2.1"
 });
 
 Package.on_use(function (api) {
