@@ -35,6 +35,7 @@ Package.on_use(function (api) {
     'lib/Resource.js',
     'lib/ResourceCache.js',
     'lib/Feed.js',
+    'lib/BlobFeed.js',
     'lib/Device.js',
     'lib/Collection.js',
     'lib/Source.js',
