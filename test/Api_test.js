@@ -30,6 +30,39 @@ describe("Api", function() {
     });
   });
 
+ describe("#loadBlob", function(done) {
+    beforeEach(function(){
+
+    });
+
+    afterEach(function(){
+
+    });
+
+    it("should form correct http request", function(done) {
+      var blobNock = nock('https://au.intelligent.li')
+        .get('/api/v1/sources/c-1/s-1/blobs/100/5')
+        .reply(200, {});
+
+      api.loadBlob("c-1", "s-1", 100, 5, function(success, blob) {
+        expect(success).to.be.true;
+        done();
+      });
+    });
+    it("should  base64 encode the blob", function(done) {
+      var blobNock = nock('https://au.intelligent.li')
+        .get('/api/v1/sources/c-1/s-1/blobs/100/5')
+        .reply(200, "1234567890");
+
+      api.loadBlob("c-1", "s-1", 100, 5, function(success, blob) {
+        logger.info("####: " + blob);
+        expect(blob.data).to.equal("MTIzNDU2Nzg5MA==");
+        expect(success).to.be.true;
+        done();
+      });
+    });
+  });
+
   describe("#loadSamples", function(done) {
     afterEach(function(){
       api.feedCache.get("feed-1").samples = new SampleStore();
