@@ -55,7 +55,6 @@ describe("Api", function() {
         .reply(200, "1234567890");
 
       api.loadBlob("c-1", "s-1", 100, 5, function(success, blob) {
-        logger.info("####: " + blob);
         expect(blob.data).to.equal("MTIzNDU2Nzg5MA==");
         expect(success).to.be.true;
         done();
