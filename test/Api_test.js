@@ -49,17 +49,6 @@ describe("Api", function() {
         done();
       });
     });
-    it("should  base64 encode the blob", function(done) {
-      var blobNock = nock('https://au.intelligent.li')
-        .get('/api/v1/sources/c-1/s-1/blobs/5/100')
-        .reply(200, "1234567890");
-
-      api.loadBlob("c-1", "s-1", 100, 5, function(success, blob) {
-        expect(blob.data).to.equal("MTIzNDU2Nzg5MA==");
-        expect(success).to.be.true;
-        done();
-      });
-    });
   });
 
   describe("#loadSamples", function(done) {
