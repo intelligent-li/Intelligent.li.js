@@ -30,7 +30,7 @@ describe("Api", function() {
     });
   });
 
- describe("#loadBlob", function(done) {
+  describe("#loadBlob", function(done) {
     beforeEach(function(){
 
     });
@@ -50,6 +50,25 @@ describe("Api", function() {
       });
     });
   });
+  describe("#loadBlobs", function(done) {
+      beforeEach(function(){
+
+      });
+
+      afterEach(function(){
+
+      });
+      it("should form correct http request", function(done) {
+        var blobNock = nock('https://au.intelligent.li')
+          .get('/api/v1/sources/9383d449a305d7123da75609919c51d8/blobs?start=1395446400&end=1395532800&name=Traralgon%20EPA')
+          .reply(200, {});
+
+        api.loadBlobs("9383d449a305d7123da75609919c51d8", "1395446400", "1395532800", "", "Traralgon EPA", function() {}, function(success, blob) {
+          expect(success).to.be.true;
+          done();
+        });
+      });
+   });
 
   describe("#loadSamples", function(done) {
     afterEach(function(){
